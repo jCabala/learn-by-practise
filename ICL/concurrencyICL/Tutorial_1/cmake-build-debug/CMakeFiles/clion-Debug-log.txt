@@ -1,0 +1,35 @@
+"C:\Program Files\JetBrains\CLion 2024.2.2\bin\cmake\win\x64\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Debug "-DCMAKE_MAKE_PROGRAM=C:/Program Files/JetBrains/CLion 2024.2.2/bin/ninja/win/x64/ninja.exe" -G Ninja -S \\wsl.localhost\Ubuntu\home\jcabala\learn-by-practise\ICL\concurrencyICL\Tutorial_1 -B \\wsl.localhost\Ubuntu\home\jcabala\learn-by-practise\ICL\concurrencyICL\Tutorial_1\cmake-build-debug
+-- The CXX compiler identification is unknown
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - failed
+-- Check for working CXX compiler: C:/Program Files/JetBrains/CLion 2024.2.2/bin/mingw/bin/g++.exe
+-- Check for working CXX compiler: C:/Program Files/JetBrains/CLion 2024.2.2/bin/mingw/bin/g++.exe - broken
+CMake Error at C:/Program Files/JetBrains/CLion 2024.2.2/bin/cmake/win/x64/share/cmake-3.29/Modules/CMakeTestCXXCompiler.cmake:73 (message):
+  The C++ compiler
+
+    "C:/Program Files/JetBrains/CLion 2024.2.2/bin/mingw/bin/g++.exe"
+
+  is not able to compile a simple test program.
+
+  It fails with the following output:
+
+    Change Dir: '//wsl.localhost/Ubuntu/home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-emjyfg'
+    
+    Run Build Command(s): "C:/Program Files/JetBrains/CLion 2024.2.2/bin/ninja/win/x64/ninja.exe" -v cmTC_bfef1
+    [1/2] C:\PROGRA~1\JETBRA~1\CLION2~1.2\bin\mingw\bin\G__~1.EXE    -o CMakeFiles\cmTC_bfef1.dir\testCXXCompiler.cxx.obj -c \\wsl.localhost\Ubuntu\home\jcabala\learn-by-practise\ICL\concurrencyICL\Tutorial_1\cmake-build-debug\CMakeFiles\CMakeScratch\TryCompile-emjyfg\testCXXCompiler.cxx
+    FAILED: CMakeFiles/cmTC_bfef1.dir/testCXXCompiler.cxx.obj 
+    C:\PROGRA~1\JETBRA~1\CLION2~1.2\bin\mingw\bin\G__~1.EXE    -o CMakeFiles\cmTC_bfef1.dir\testCXXCompiler.cxx.obj -c \\wsl.localhost\Ubuntu\home\jcabala\learn-by-practise\ICL\concurrencyICL\Tutorial_1\cmake-build-debug\CMakeFiles\CMakeScratch\TryCompile-emjyfg\testCXXCompiler.cxx
+    Assembler messages:
+    Fatal error: can't create CMakeFiles\cmTC_bfef1.dir\testCXXCompiler.cxx.obj: Invalid argument
+    ninja: build stopped: subcommand failed.
+    
+    
+
+  
+
+  CMake will not be able to correctly generate this project.
+Call Stack (most recent call first):
+  CMakeLists.txt:3 (project)
+
+
+-- Configuring incomplete, errors occurred!

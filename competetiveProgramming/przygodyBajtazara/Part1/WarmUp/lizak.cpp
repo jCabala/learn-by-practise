@@ -11,27 +11,24 @@ pair<int, int> ans[2000001];
 void updateAt(int price, int beg, int end);
 
 void findPossible() {
-    //cout << "I START";
     int firstOneIdx = 0, curPrice = maxPrice;
     while(lizak[firstOneIdx] == 2) {
-        curPrice -= lizak[firstOneIdx++];
         updateAt(curPrice, firstOneIdx, n - 1);
+        curPrice -= lizak[firstOneIdx++];
     }
-    //cout << "I RUN";
+
     for (int i = n - 1; i >= firstOneIdx; i--) {
         updateAt(curPrice, firstOneIdx, i);
         updateAt(curPrice - 1, firstOneIdx + 1, i);
         curPrice -= lizak[i];
     }
-
-    //cout << "I RUN TOO";
 }
 
 void updateAt(int price, int beg, int end) {
     possible[price] = true;
     reversed 
-        ? ans[price] = {beg, end} 
-        : ans[price] = {n - 1 - end, n - 1 - beg};
+        ? ans[price] = {n - 1 - end, n - 1 - beg}
+        : ans[price] = {beg, end};
 }
 
 int main() {
@@ -45,12 +42,11 @@ int main() {
         maxPrice += price;
     }
 
-    updateAt(maxPrice, 0, n - 1);
     findPossible();
     reverse(lizak.begin(), lizak.end());
     reversed = true;
     findPossible();
-    //cout << "\n";
+
     for (int i = 0; i < m; i++) {
         int price;
         cin >> price;
@@ -59,12 +55,6 @@ int main() {
             cout << ans[price].first + 1 << " " << ans[price].second + 1 << "\n";
         } else {
             cout << "NIE\n";
-        }
-    }
-
-    for (int i = 0; i <= maxPrice; i++) {
-        if (possible[i]) {
-            cout << i << " ";
         }
     }
 }
