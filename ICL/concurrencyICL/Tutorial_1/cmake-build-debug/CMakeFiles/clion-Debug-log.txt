@@ -13,14 +13,14 @@ CMake Error at C:/Program Files/JetBrains/CLion 2024.2.2/bin/cmake/win/x64/share
 
   It fails with the following output:
 
-    Change Dir: '//wsl.localhost/Ubuntu/home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-emjyfg'
+    Change Dir: '//wsl.localhost/Ubuntu/home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-gpaao9'
     
-    Run Build Command(s): "C:/Program Files/JetBrains/CLion 2024.2.2/bin/ninja/win/x64/ninja.exe" -v cmTC_bfef1
-    [1/2] C:\PROGRA~1\JETBRA~1\CLION2~1.2\bin\mingw\bin\G__~1.EXE    -o CMakeFiles\cmTC_bfef1.dir\testCXXCompiler.cxx.obj -c \\wsl.localhost\Ubuntu\home\jcabala\learn-by-practise\ICL\concurrencyICL\Tutorial_1\cmake-build-debug\CMakeFiles\CMakeScratch\TryCompile-emjyfg\testCXXCompiler.cxx
-    FAILED: CMakeFiles/cmTC_bfef1.dir/testCXXCompiler.cxx.obj 
-    C:\PROGRA~1\JETBRA~1\CLION2~1.2\bin\mingw\bin\G__~1.EXE    -o CMakeFiles\cmTC_bfef1.dir\testCXXCompiler.cxx.obj -c \\wsl.localhost\Ubuntu\home\jcabala\learn-by-practise\ICL\concurrencyICL\Tutorial_1\cmake-build-debug\CMakeFiles\CMakeScratch\TryCompile-emjyfg\testCXXCompiler.cxx
+    Run Build Command(s): "C:/Program Files/JetBrains/CLion 2024.2.2/bin/ninja/win/x64/ninja.exe" -v cmTC_9cf8d
+    [1/2] C:\PROGRA~1\JETBRA~1\CLION2~1.2\bin\mingw\bin\G__~1.EXE    -o CMakeFiles\cmTC_9cf8d.dir\testCXXCompiler.cxx.obj -c \\wsl.localhost\Ubuntu\home\jcabala\learn-by-practise\ICL\concurrencyICL\Tutorial_1\cmake-build-debug\CMakeFiles\CMakeScratch\TryCompile-gpaao9\testCXXCompiler.cxx
+    FAILED: CMakeFiles/cmTC_9cf8d.dir/testCXXCompiler.cxx.obj 
+    C:\PROGRA~1\JETBRA~1\CLION2~1.2\bin\mingw\bin\G__~1.EXE    -o CMakeFiles\cmTC_9cf8d.dir\testCXXCompiler.cxx.obj -c \\wsl.localhost\Ubuntu\home\jcabala\learn-by-practise\ICL\concurrencyICL\Tutorial_1\cmake-build-debug\CMakeFiles\CMakeScratch\TryCompile-gpaao9\testCXXCompiler.cxx
     Assembler messages:
-    Fatal error: can't create CMakeFiles\cmTC_bfef1.dir\testCXXCompiler.cxx.obj: Invalid argument
+    Fatal error: can't create CMakeFiles\cmTC_9cf8d.dir\testCXXCompiler.cxx.obj: Invalid argument
     ninja: build stopped: subcommand failed.
     
     

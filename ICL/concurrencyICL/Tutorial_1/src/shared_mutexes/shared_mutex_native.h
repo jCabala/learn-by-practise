@@ -7,22 +7,24 @@
 
 class SharedMutexNative : public SharedMutexBase {
  public:
-  void Lock() final {}
+  void Lock() final {
+    mutex_.lock();
+  }
 
   void Unlock() final {
-    // TODO
+    mutex_.unlock();
   }
 
   void LockShared() final {
-    // TODO
+    mutex_.lock_shared();
   }
 
   void UnlockShared() final {
-    // TODO
+    mutex_.unlock_shared();
   }
 
  private:
-  // TODO
+  std::shared_mutex mutex_;
 };
 
 #endif  // SHARED_MUTEX_NATIVE_H

@@ -9,22 +9,24 @@
 
 class SharedMutexStupid : public SharedMutexBase {
  public:
-  void Lock() final {}
+  void Lock() final {
+    mutex_.lock();
+  }
 
   void Unlock() final {
-    // TODO
+    mutex_.unlock();
   }
 
   void LockShared() final {
-    // TODO
+    mutex_.lock();
   }
 
   void UnlockShared() final {
-    // TODO
+    mutex_.unlock();
   }
 
  private:
-  // TODO
+  std::mutex mutex_;
 };
 
 #endif  // SHARED_MUTEX_STUPID_H

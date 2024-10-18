@@ -1,0 +1,87 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.13"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "hashsets",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "demo_histograms::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-demo_histograms-Debug-3c1390bdb105772c811c.json",
+					"name" : "demo_histograms",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "demo_random_sets::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-demo_random_sets-Debug-8338ecce2859ce529aff.json",
+					"name" : "demo_random_sets",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "demo_recursive_mutexes::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-demo_recursive_mutexes-Debug-400faa1f48917ece8411.json",
+					"name" : "demo_recursive_mutexes",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "demo_shared_mutexes::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-demo_shared_mutexes-Debug-1dd9090debcb67f9bcc1.json",
+					"name" : "demo_shared_mutexes",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/cmake-build-debug-wsl",
+		"source" : "/home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

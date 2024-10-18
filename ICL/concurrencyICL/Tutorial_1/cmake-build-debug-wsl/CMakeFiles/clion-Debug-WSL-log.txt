@@ -1,0 +1,4 @@
+/usr/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=/usr/bin/clang++ -G "Unix Makefiles" -S /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1 -B /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/cmake-build-debug-wsl
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/cmake-build-debug-wsl

@@ -9,22 +9,39 @@
 
 class SharedMutexSimple : public SharedMutexBase {
  public:
-  void Lock() final {}
+  void Lock() final {
+    std::unique_lock<std::mutex> lock(mutex_);
+    condition_.wait(lock, [&]() {
+      return num_readers_ == 0 && !has_writer_;
+    });
+    has_writer_ = true;
+  }
 
   void Unlock() final {
-    // TODO
+      assert(has_writer_);
+      has_writer_ = false;
+      condition_.notify_all();
   }
 
   void LockShared() final {
-    // TODO
+    std::unique_lock<std::mutex> lock(mutex_);
+    condition_.wait(lock, [&]() {
+      return !has_writer_;
+    });
+    num_readers_++;
   }
 
   void UnlockShared() final {
-    // TODO
+    assert(num_readers_ > 0);
+    num_readers_--;
+    if (num_readers_ == 0) condition_.notify_all();
   }
 
  private:
-  // TODO
+  int num_readers_ = 0;
+  bool has_writer_ = false;
+  std::condition_variable condition_;
+  std::mutex mutex_;
 };
 
 #endif  // SHARED_MUTEX_SIMPLE_H
