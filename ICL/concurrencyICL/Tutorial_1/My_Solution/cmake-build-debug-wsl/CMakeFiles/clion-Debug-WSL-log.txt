@@ -1,4 +1,15 @@
-/usr/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=/usr/bin/clang++ -G "Unix Makefiles" -S /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1 -B /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/cmake-build-debug-wsl
+/usr/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=/usr/bin/clang++ -G "Unix Makefiles" -S /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/My_Solution -B /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/My_Solution/cmake-build-debug-wsl
+-- The CXX compiler identification is Clang 14.0.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/clang++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Looking for C++ include pthread.h
+-- Looking for C++ include pthread.h - found
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE  
 -- Configuring done
 -- Generating done
--- Build files have been written to: /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/cmake-build-debug-wsl
+-- Build files have been written to: /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/My_Solution/cmake-build-debug-wsl

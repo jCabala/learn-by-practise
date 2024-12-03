@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/src/histograms/demo_histograms.cc" "CMakeFiles/demo_histograms.dir/src/histograms/demo_histograms.cc.o" "gcc" "CMakeFiles/demo_histograms.dir/src/histograms/demo_histograms.cc.o.d"
+  "/home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/My_Solution/src/histograms/demo_histograms.cc" "CMakeFiles/demo_histograms.dir/src/histograms/demo_histograms.cc.o" "gcc" "CMakeFiles/demo_histograms.dir/src/histograms/demo_histograms.cc.o.d"
   )
 
 # Targets to which this target links.

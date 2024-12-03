@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/src/recursive_mutex/demo_recursive_mutexes.cc" "CMakeFiles/demo_recursive_mutexes.dir/src/recursive_mutex/demo_recursive_mutexes.cc.o" "gcc" "CMakeFiles/demo_recursive_mutexes.dir/src/recursive_mutex/demo_recursive_mutexes.cc.o.d"
+  "/home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/My_Solution/src/recursive_mutex/demo_recursive_mutexes.cc" "CMakeFiles/demo_recursive_mutexes.dir/src/recursive_mutex/demo_recursive_mutexes.cc.o" "gcc" "CMakeFiles/demo_recursive_mutexes.dir/src/recursive_mutex/demo_recursive_mutexes.cc.o.d"
   )
 
 # Targets to which this target links.

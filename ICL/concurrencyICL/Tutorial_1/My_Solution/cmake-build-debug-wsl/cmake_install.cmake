@@ -1,4 +1,4 @@
-# Install script for directory: /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1
+# Install script for directory: /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/My_Solution
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/cmake-build-debug-wsl/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/My_Solution/cmake-build-debug-wsl/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

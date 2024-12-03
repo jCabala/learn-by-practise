@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/src/random_sets/demo_random_sets.cc" "CMakeFiles/demo_random_sets.dir/src/random_sets/demo_random_sets.cc.o" "gcc" "CMakeFiles/demo_random_sets.dir/src/random_sets/demo_random_sets.cc.o.d"
+  "/home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/My_Solution/src/random_sets/demo_random_sets.cc" "CMakeFiles/demo_random_sets.dir/src/random_sets/demo_random_sets.cc.o" "gcc" "CMakeFiles/demo_random_sets.dir/src/random_sets/demo_random_sets.cc.o.d"
   )
 
 # Targets to which this target links.

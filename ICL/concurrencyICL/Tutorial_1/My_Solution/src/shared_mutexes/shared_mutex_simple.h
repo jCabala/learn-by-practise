@@ -18,6 +18,7 @@ class SharedMutexSimple : public SharedMutexBase {
   }
 
   void Unlock() final {
+      std::unique_lock<std::mutex> lock(mutex_);
       assert(has_writer_);
       has_writer_ = false;
       condition_.notify_all();
@@ -32,6 +33,7 @@ class SharedMutexSimple : public SharedMutexBase {
   }
 
   void UnlockShared() final {
+    std::unique_lock<std::mutex> lock(mutex_);
     assert(num_readers_ > 0);
     num_readers_--;
     if (num_readers_ == 0) condition_.notify_all();

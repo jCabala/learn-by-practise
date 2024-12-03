@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/clang++
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1
+CXX_INCLUDES = -I/home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/My_Solution
 
 CXX_FLAGS = -g -fPIE -Werror -Wall -Wextra -pedantic -Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-padded -Wno-weak-vtables -std=c++17
 

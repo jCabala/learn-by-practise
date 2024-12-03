@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1
+CMAKE_SOURCE_DIR = /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/My_Solution
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/cmake-build-debug-wsl
+CMAKE_BINARY_DIR = /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/My_Solution/cmake-build-debug-wsl
 
 # Include any dependencies generated for this target.
 include CMakeFiles/demo_random_sets.dir/depend.make
@@ -72,16 +72,16 @@ include CMakeFiles/demo_random_sets.dir/flags.make
 CMakeFiles/demo_random_sets.dir/src/random_sets/demo_random_sets.cc.o: CMakeFiles/demo_random_sets.dir/flags.make
 CMakeFiles/demo_random_sets.dir/src/random_sets/demo_random_sets.cc.o: ../src/random_sets/demo_random_sets.cc
 CMakeFiles/demo_random_sets.dir/src/random_sets/demo_random_sets.cc.o: CMakeFiles/demo_random_sets.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/cmake-build-debug-wsl/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/demo_random_sets.dir/src/random_sets/demo_random_sets.cc.o"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/demo_random_sets.dir/src/random_sets/demo_random_sets.cc.o -MF CMakeFiles/demo_random_sets.dir/src/random_sets/demo_random_sets.cc.o.d -o CMakeFiles/demo_random_sets.dir/src/random_sets/demo_random_sets.cc.o -c /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/src/random_sets/demo_random_sets.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/My_Solution/cmake-build-debug-wsl/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/demo_random_sets.dir/src/random_sets/demo_random_sets.cc.o"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/demo_random_sets.dir/src/random_sets/demo_random_sets.cc.o -MF CMakeFiles/demo_random_sets.dir/src/random_sets/demo_random_sets.cc.o.d -o CMakeFiles/demo_random_sets.dir/src/random_sets/demo_random_sets.cc.o -c /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/My_Solution/src/random_sets/demo_random_sets.cc
 
 CMakeFiles/demo_random_sets.dir/src/random_sets/demo_random_sets.cc.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/demo_random_sets.dir/src/random_sets/demo_random_sets.cc.i"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/src/random_sets/demo_random_sets.cc > CMakeFiles/demo_random_sets.dir/src/random_sets/demo_random_sets.cc.i
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/My_Solution/src/random_sets/demo_random_sets.cc > CMakeFiles/demo_random_sets.dir/src/random_sets/demo_random_sets.cc.i
 
 CMakeFiles/demo_random_sets.dir/src/random_sets/demo_random_sets.cc.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/demo_random_sets.dir/src/random_sets/demo_random_sets.cc.s"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/src/random_sets/demo_random_sets.cc -o CMakeFiles/demo_random_sets.dir/src/random_sets/demo_random_sets.cc.s
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/My_Solution/src/random_sets/demo_random_sets.cc -o CMakeFiles/demo_random_sets.dir/src/random_sets/demo_random_sets.cc.s
 
 # Object files for target demo_random_sets
 demo_random_sets_OBJECTS = \
@@ -93,7 +93,7 @@ demo_random_sets_EXTERNAL_OBJECTS =
 demo_random_sets: CMakeFiles/demo_random_sets.dir/src/random_sets/demo_random_sets.cc.o
 demo_random_sets: CMakeFiles/demo_random_sets.dir/build.make
 demo_random_sets: CMakeFiles/demo_random_sets.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/cmake-build-debug-wsl/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable demo_random_sets"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/My_Solution/cmake-build-debug-wsl/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable demo_random_sets"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/demo_random_sets.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -105,6 +105,6 @@ CMakeFiles/demo_random_sets.dir/clean:
 .PHONY : CMakeFiles/demo_random_sets.dir/clean
 
 CMakeFiles/demo_random_sets.dir/depend:
-	cd /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/cmake-build-debug-wsl && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1 /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1 /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/cmake-build-debug-wsl /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/cmake-build-debug-wsl /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/cmake-build-debug-wsl/CMakeFiles/demo_random_sets.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/My_Solution/cmake-build-debug-wsl && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/My_Solution /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/My_Solution /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/My_Solution/cmake-build-debug-wsl /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/My_Solution/cmake-build-debug-wsl /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/My_Solution/cmake-build-debug-wsl/CMakeFiles/demo_random_sets.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/demo_random_sets.dir/depend
 

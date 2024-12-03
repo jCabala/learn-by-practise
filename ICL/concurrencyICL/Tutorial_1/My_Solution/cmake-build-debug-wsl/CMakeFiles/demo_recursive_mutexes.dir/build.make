@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1
+CMAKE_SOURCE_DIR = /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/My_Solution
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/cmake-build-debug-wsl
+CMAKE_BINARY_DIR = /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/My_Solution/cmake-build-debug-wsl
 
 # Include any dependencies generated for this target.
 include CMakeFiles/demo_recursive_mutexes.dir/depend.make
@@ -72,16 +72,16 @@ include CMakeFiles/demo_recursive_mutexes.dir/flags.make
 CMakeFiles/demo_recursive_mutexes.dir/src/recursive_mutex/demo_recursive_mutexes.cc.o: CMakeFiles/demo_recursive_mutexes.dir/flags.make
 CMakeFiles/demo_recursive_mutexes.dir/src/recursive_mutex/demo_recursive_mutexes.cc.o: ../src/recursive_mutex/demo_recursive_mutexes.cc
 CMakeFiles/demo_recursive_mutexes.dir/src/recursive_mutex/demo_recursive_mutexes.cc.o: CMakeFiles/demo_recursive_mutexes.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/cmake-build-debug-wsl/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/demo_recursive_mutexes.dir/src/recursive_mutex/demo_recursive_mutexes.cc.o"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/demo_recursive_mutexes.dir/src/recursive_mutex/demo_recursive_mutexes.cc.o -MF CMakeFiles/demo_recursive_mutexes.dir/src/recursive_mutex/demo_recursive_mutexes.cc.o.d -o CMakeFiles/demo_recursive_mutexes.dir/src/recursive_mutex/demo_recursive_mutexes.cc.o -c /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/src/recursive_mutex/demo_recursive_mutexes.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/My_Solution/cmake-build-debug-wsl/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/demo_recursive_mutexes.dir/src/recursive_mutex/demo_recursive_mutexes.cc.o"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/demo_recursive_mutexes.dir/src/recursive_mutex/demo_recursive_mutexes.cc.o -MF CMakeFiles/demo_recursive_mutexes.dir/src/recursive_mutex/demo_recursive_mutexes.cc.o.d -o CMakeFiles/demo_recursive_mutexes.dir/src/recursive_mutex/demo_recursive_mutexes.cc.o -c /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/My_Solution/src/recursive_mutex/demo_recursive_mutexes.cc
 
 CMakeFiles/demo_recursive_mutexes.dir/src/recursive_mutex/demo_recursive_mutexes.cc.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/demo_recursive_mutexes.dir/src/recursive_mutex/demo_recursive_mutexes.cc.i"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/src/recursive_mutex/demo_recursive_mutexes.cc > CMakeFiles/demo_recursive_mutexes.dir/src/recursive_mutex/demo_recursive_mutexes.cc.i
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/My_Solution/src/recursive_mutex/demo_recursive_mutexes.cc > CMakeFiles/demo_recursive_mutexes.dir/src/recursive_mutex/demo_recursive_mutexes.cc.i
 
 CMakeFiles/demo_recursive_mutexes.dir/src/recursive_mutex/demo_recursive_mutexes.cc.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/demo_recursive_mutexes.dir/src/recursive_mutex/demo_recursive_mutexes.cc.s"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/src/recursive_mutex/demo_recursive_mutexes.cc -o CMakeFiles/demo_recursive_mutexes.dir/src/recursive_mutex/demo_recursive_mutexes.cc.s
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/My_Solution/src/recursive_mutex/demo_recursive_mutexes.cc -o CMakeFiles/demo_recursive_mutexes.dir/src/recursive_mutex/demo_recursive_mutexes.cc.s
 
 # Object files for target demo_recursive_mutexes
 demo_recursive_mutexes_OBJECTS = \
@@ -93,7 +93,7 @@ demo_recursive_mutexes_EXTERNAL_OBJECTS =
 demo_recursive_mutexes: CMakeFiles/demo_recursive_mutexes.dir/src/recursive_mutex/demo_recursive_mutexes.cc.o
 demo_recursive_mutexes: CMakeFiles/demo_recursive_mutexes.dir/build.make
 demo_recursive_mutexes: CMakeFiles/demo_recursive_mutexes.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/cmake-build-debug-wsl/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable demo_recursive_mutexes"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/My_Solution/cmake-build-debug-wsl/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable demo_recursive_mutexes"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/demo_recursive_mutexes.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -105,6 +105,6 @@ CMakeFiles/demo_recursive_mutexes.dir/clean:
 .PHONY : CMakeFiles/demo_recursive_mutexes.dir/clean
 
 CMakeFiles/demo_recursive_mutexes.dir/depend:
-	cd /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/cmake-build-debug-wsl && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1 /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1 /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/cmake-build-debug-wsl /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/cmake-build-debug-wsl /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/cmake-build-debug-wsl/CMakeFiles/demo_recursive_mutexes.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/My_Solution/cmake-build-debug-wsl && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/My_Solution /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/My_Solution /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/My_Solution/cmake-build-debug-wsl /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/My_Solution/cmake-build-debug-wsl /home/jcabala/learn-by-practise/ICL/concurrencyICL/Tutorial_1/My_Solution/cmake-build-debug-wsl/CMakeFiles/demo_recursive_mutexes.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/demo_recursive_mutexes.dir/depend
 
