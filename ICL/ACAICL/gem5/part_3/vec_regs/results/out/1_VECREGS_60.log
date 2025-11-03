@@ -1,0 +1,40 @@
+=== [1] NAME=VECREGS_60  REGISTERS=60 ===
+CMD: python /homes/lp721/aca-gem5/simulate.py --num-vec-phys-regs 60 --name VECREGS_60
+warn: The se.py script is deprecated. It will be removed in future releases of  gem5.
+Global frequency set at 1000000000000 ticks per second
+warn: No dot file generated. Please install pydot to generate the dot file and pdf.
+src/mem/dram_interface.cc:690: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (512 Mbytes)
+src/base/statistics.hh:279: warn: One of the stats is a legacy stat. Legacy stat is a stat that does not belong to any statistics::Group. Legacy stat is deprecated.
+src/base/remote_gdb.cc:418: warn: Sockets disabled, not accepting gdb connections
+gem5 Simulator System.  https://www.gem5.org
+gem5 is copyrighted software; use the --copyright option for details.
+
+gem5 version 24.0.0.1
+gem5 compiled Oct 26 2025 13:38:09
+gem5 started Nov  1 2025 11:06:53
+gem5 executing on maple10.doc.ic.ac.uk, pid 94547
+command line: /homes/lp721/aca-gem5/gem5/build/X86/gem5.fast --outdir=./out/VECREGS_60/gem5.out /homes/lp721/aca-gem5/gem5/configs/deprecated/example/se.py --cpu-type=DerivO3CPU --caches --l2cache -c /homes/lp721/aca-gem5/benchmarks/gapbs/tc '--options=-u 10 -n 1 -k 16' -P 'system.cpu[:].numROBEntries=128' -P 'system.cpu[:].numIQEntries=85' -P 'system.cpu[:].LQEntries=43' -P 'system.cpu[:].SQEntries=43' -P 'system.cpu[:].numPhysIntRegs=128' -P 'system.cpu[:].numPhysFloatRegs=128' -P 'system.cpu[:].numPhysVecRegs=128' -P 'system.cpu[:].numPhysVecRegs=60' --l1d_size=128KiB --l1i_size=128KiB --l2_size=8MB
+
+info: Standard input is not a terminal, disabling listeners.
+**** REAL SIMULATION ****
+src/sim/simulate.cc:199: info: Entering event queue @ 0.  Starting simulation...
+src/sim/syscall_emul.cc:74: warn: ignoring syscall set_robust_list(...)
+src/sim/syscall_emul.cc:74: warn: ignoring syscall rseq(...)
+src/sim/mem_state.cc:448: info: Increasing stack size by one page.
+src/sim/syscall_emul.cc:74: warn: ignoring syscall mprotect(...)
+Generate Time:       0.00061
+Build Time:          0.00131
+Graph has 1024 nodes and 16111 undirected edges for degree: 15
+Trial Time:          0.00238
+Average Time:        0.00238
+Exiting @ tick 5820359500 because exiting with last active thread context
+
+    Simulated seconds = 0.005820
+    CPI = 1.359812
+    Area = 13.2328 mm^2
+    Peak Dynamic = 28.3944 W
+    Subthreshold Leakage = 19.6589 W
+    Gate Leakage = 0.0130689 W
+    Runtime Dynamic = 5.76748 W
+
+Results have been written to: ./out/VECREGS_60/results

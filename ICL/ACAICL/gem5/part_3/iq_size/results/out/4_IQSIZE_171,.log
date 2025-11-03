@@ -1,0 +1,15 @@
+=== [4] NAME=IQSIZE_171,  IQ_SIZE=171, ===
+CMD: python /homes/lp721/aca-gem5/simulate.py --iq-size 171, --name IQSIZE_171,
+usage: simulate.py [-h] [--name NAME] [--gen-trace]
+                   [--pipeline-width PIPELINE_WIDTH] [--rob-size ROB_SIZE]
+                   [--num-int-phys-regs NUM_INT_PHYS_REGS]
+                   [--num-float-phys-regs NUM_FLOAT_PHYS_REGS]
+                   [--num-vec-phys-regs NUM_VEC_PHYS_REGS] [--iq-size IQ_SIZE]
+                   [--lq-size LQ_SIZE] [--sq-size SQ_SIZE]
+                   [--lsq-size LSQ_SIZE] [--window-size WINDOW_SIZE]
+                   [--local-pred-size LOCAL_PRED_SIZE]
+                   [--global-pred-size GLOBAL_PRED_SIZE] [--btb-size BTB_SIZE]
+                   [--ras-size RAS_SIZE] [--branch-pred-size BRANCH_PRED_SIZE]
+                   [--l1-data-size L1_DATA_SIZE] [--l1-inst-size L1_INST_SIZE]
+                   [--l2-size L2_SIZE]
+simulate.py: error: argument --window-size: invalid int value: 

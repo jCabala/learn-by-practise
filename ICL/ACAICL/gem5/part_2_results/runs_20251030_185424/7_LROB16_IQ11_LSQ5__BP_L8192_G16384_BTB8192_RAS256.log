@@ -1,0 +1,40 @@
+=== [7] NAME=LROB16_IQ11_LSQ5__BP_L8192_G16384_BTB8192_RAS256  WINDOW=16,11,5  BRANCH=8192,16384,8192,256 ===
+CMD: python /homes/lp721/aca-gem5/simulate.py --window-size 16,11,5 --branch-pred-size 8192,16384,8192,256 --name LROB16_IQ11_LSQ5__BP_L8192_G16384_BTB8192_RAS256
+warn: The se.py script is deprecated. It will be removed in future releases of  gem5.
+Global frequency set at 1000000000000 ticks per second
+warn: No dot file generated. Please install pydot to generate the dot file and pdf.
+src/mem/dram_interface.cc:690: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (512 Mbytes)
+src/base/statistics.hh:279: warn: One of the stats is a legacy stat. Legacy stat is a stat that does not belong to any statistics::Group. Legacy stat is deprecated.
+src/base/remote_gdb.cc:418: warn: Sockets disabled, not accepting gdb connections
+gem5 Simulator System.  https://www.gem5.org
+gem5 is copyrighted software; use the --copyright option for details.
+
+gem5 version 24.0.0.1
+gem5 compiled Oct 26 2025 13:38:09
+gem5 started Oct 30 2025 18:55:04
+gem5 executing on maple10.doc.ic.ac.uk, pid 2368960
+command line: /homes/lp721/aca-gem5/gem5/build/X86/gem5.fast --outdir=LROB16_IQ11_LSQ5__BP_L8192_G16384_BTB8192_RAS256/gem5.out /homes/lp721/aca-gem5/gem5/configs/deprecated/example/se.py --cpu-type=DerivO3CPU --caches --l2cache -c /homes/lp721/aca-gem5/benchmarks/gapbs/tc '--options=-u 10 -n 1 -k 16' -P 'system.cpu[:].numROBEntries=16' -P 'system.cpu[:].numIQEntries=11' -P 'system.cpu[:].LQEntries=5' -P 'system.cpu[:].SQEntries=5' -P 'system.cpu[:].numPhysIntRegs=49' -P 'system.cpu[:].numPhysFloatRegs=49' -P 'system.cpu[:].numPhysVecRegs=49' -P 'system.cpu[:].branchPred.localPredictorSize=8192' -P 'system.cpu[:].branchPred.globalPredictorSize=16384' -P 'system.cpu[:].branchPred.btb.numEntries=8192' -P 'system.cpu[:].branchPred.ras.numEntries=256' -P 'system.cpu[:].branchPred.localHistoryTableSize=8192' --l1d_size=128KiB --l1i_size=128KiB --l2_size=8MB
+
+info: Standard input is not a terminal, disabling listeners.
+**** REAL SIMULATION ****
+src/sim/simulate.cc:199: info: Entering event queue @ 0.  Starting simulation...
+src/sim/syscall_emul.cc:74: warn: ignoring syscall set_robust_list(...)
+src/sim/syscall_emul.cc:74: warn: ignoring syscall rseq(...)
+src/sim/mem_state.cc:448: info: Increasing stack size by one page.
+src/sim/syscall_emul.cc:74: warn: ignoring syscall mprotect(...)
+Generate Time:       0.00307
+Build Time:          0.00187
+Graph has 1024 nodes and 16111 undirected edges for degree: 15
+Trial Time:          0.00311
+Average Time:        0.00311
+Exiting @ tick 10544888500 because exiting with last active thread context
+
+    Simulated seconds = 0.010545
+    CPI = 2.463600
+    Area = 11.4762 mm^2
+    Peak Dynamic = 23.4811 W
+    Subthreshold Leakage = 19.6222 W
+    Gate Leakage = 0.0130015 W
+    Runtime Dynamic = 3.9205 W
+
+Results have been written to: LROB16_IQ11_LSQ5__BP_L8192_G16384_BTB8192_RAS256/results

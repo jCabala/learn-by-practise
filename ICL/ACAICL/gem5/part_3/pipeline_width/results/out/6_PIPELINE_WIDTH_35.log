@@ -1,0 +1,16 @@
+=== [6] NAME=PIPELINE_WIDTH_35  PIPELINE_WIDTH=35 ===
+CMD: python /homes/lp721/aca-gem5/simulate.py --pipeline-width 35 --name PIPELINE_WIDTH_35
+warn: The se.py script is deprecated. It will be removed in future releases of  gem5.
+Global frequency set at 1000000000000 ticks per second
+warn: No dot file generated. Please install pydot to generate the dot file and pdf.
+src/mem/dram_interface.cc:690: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (512 Mbytes)
+src/base/statistics.hh:279: warn: One of the stats is a legacy stat. Legacy stat is a stat that does not belong to any statistics::Group. Legacy stat is deprecated.
+src/cpu/o3/fetch.cc:109: fatal: fetchWidth (35) is larger than compiled limit (23),
+	increase MaxWidth in src/cpu/o3/limits.hh
+Memory Usage: 647096 KBytes
+Traceback (most recent call last):
+  File "/homes/lp721/aca-gem5/simulate.py", line 207, in <module>
+    subprocess.run(gem5_run, shell=True, check=True)
+  File "/usr/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '/homes/lp721/aca-gem5/gem5/build/X86/gem5.fast --outdir=./out/PIPELINE_WIDTH_35/gem5.out /homes/lp721/aca-gem5/gem5/configs/deprecated/example/se.py --cpu-type=DerivO3CPU --caches --l2cache -c /homes/lp721/aca-gem5/benchmarks/gapbs/tc --options="-u 10 -n 1 -k 16" -P "system.cpu[:].fetchWidth=35"  -P "system.cpu[:].decodeWidth=35"  -P "system.cpu[:].renameWidth=35"  -P "system.cpu[:].dispatchWidth=35"  -P "system.cpu[:].issueWidth=35"  -P "system.cpu[:].wbWidth=35"  -P "system.cpu[:].squashWidth=35"  -P "system.cpu[:].commitWidth=35"  -P "system.cpu[:].numROBEntries=128"  -P "system.cpu[:].numIQEntries=43"  -P "system.cpu[:].LQEntries=43"  -P "system.cpu[:].SQEntries=43"  -P "system.cpu[:].numPhysIntRegs=128"  -P "system.cpu[:].numPhysFloatRegs=128"  -P "system.cpu[:].numPhysVecRegs=128"  --l1d_size=128KiB  --l1i_size=128KiB  --l2_size=8MB ' returned non-zero exit status 1.

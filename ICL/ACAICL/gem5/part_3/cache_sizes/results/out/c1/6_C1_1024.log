@@ -1,0 +1,40 @@
+=== [6] NAME=C1_1024  L1_CACHE_SIZE=1024 ===
+CMD: python /homes/lp721/aca-gem5/simulate.py  --l1-data-size 1024 --name C1_1024
+warn: The se.py script is deprecated. It will be removed in future releases of  gem5.
+Global frequency set at 1000000000000 ticks per second
+warn: No dot file generated. Please install pydot to generate the dot file and pdf.
+src/mem/dram_interface.cc:690: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (512 Mbytes)
+src/base/statistics.hh:279: warn: One of the stats is a legacy stat. Legacy stat is a stat that does not belong to any statistics::Group. Legacy stat is deprecated.
+src/base/remote_gdb.cc:418: warn: Sockets disabled, not accepting gdb connections
+gem5 Simulator System.  https://www.gem5.org
+gem5 is copyrighted software; use the --copyright option for details.
+
+gem5 version 24.0.0.1
+gem5 compiled Oct 26 2025 13:38:09
+gem5 started Nov  1 2025 16:34:06
+gem5 executing on maple10.doc.ic.ac.uk, pid 414884
+command line: /homes/lp721/aca-gem5/gem5/build/X86/gem5.fast --outdir=./out/c1/C1_1024/gem5.out /homes/lp721/aca-gem5/gem5/configs/deprecated/example/se.py --cpu-type=DerivO3CPU --caches --l2cache -c /homes/lp721/aca-gem5/benchmarks/gapbs/tc '--options=-u 10 -n 1 -k 16' -P 'system.cpu[:].numROBEntries=128' -P 'system.cpu[:].numIQEntries=85' -P 'system.cpu[:].LQEntries=43' -P 'system.cpu[:].SQEntries=43' -P 'system.cpu[:].numPhysIntRegs=128' -P 'system.cpu[:].numPhysFloatRegs=128' -P 'system.cpu[:].numPhysVecRegs=128' --l1d_size=1024KiB --l1i_size=128KiB --l2_size=8MB
+
+info: Standard input is not a terminal, disabling listeners.
+**** REAL SIMULATION ****
+src/sim/simulate.cc:199: info: Entering event queue @ 0.  Starting simulation...
+src/sim/syscall_emul.cc:74: warn: ignoring syscall set_robust_list(...)
+src/sim/syscall_emul.cc:74: warn: ignoring syscall rseq(...)
+src/sim/mem_state.cc:448: info: Increasing stack size by one page.
+src/sim/syscall_emul.cc:74: warn: ignoring syscall mprotect(...)
+Generate Time:       0.00061
+Build Time:          0.00125
+Graph has 1024 nodes and 16111 undirected edges for degree: 15
+Trial Time:          0.00236
+Average Time:        0.00236
+Exiting @ tick 5728123500 because exiting with last active thread context
+
+    Simulated seconds = 0.005728
+    CPI = 1.338267
+    Area = 17.5956 mm^2
+    Peak Dynamic = 29.4195 W
+    Subthreshold Leakage = 24.4281 W
+    Gate Leakage = 0.0148037 W
+    Runtime Dynamic = 6.23054 W
+
+Results have been written to: ./out/c1/C1_1024/results

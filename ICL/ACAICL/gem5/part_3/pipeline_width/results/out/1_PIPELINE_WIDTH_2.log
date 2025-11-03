@@ -1,0 +1,3 @@
+=== [1] NAME=PIPELINE_WIDTH_2  PIPELINE_WIDTH=2 ===
+CMD: python /homes/lp721/aca-gem5/simulate.py --pipeline-width 2 --name PIPELINE_WIDTH_2
+Pipeline width must be at least 4!

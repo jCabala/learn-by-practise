@@ -1,0 +1,40 @@
+=== [17] NAME=LROB64_IQ43_LSQ21__BP_L128_G256_BTB128_RAS16  WINDOW=64,43,21  BRANCH=128,256,128,16 ===
+CMD: python /homes/lp721/aca-gem5/simulate.py --window-size 64,43,21 --branch-pred-size 128,256,128,16 --name LROB64_IQ43_LSQ21__BP_L128_G256_BTB128_RAS16
+warn: The se.py script is deprecated. It will be removed in future releases of  gem5.
+Global frequency set at 1000000000000 ticks per second
+warn: No dot file generated. Please install pydot to generate the dot file and pdf.
+src/mem/dram_interface.cc:690: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (512 Mbytes)
+src/base/statistics.hh:279: warn: One of the stats is a legacy stat. Legacy stat is a stat that does not belong to any statistics::Group. Legacy stat is deprecated.
+src/base/remote_gdb.cc:418: warn: Sockets disabled, not accepting gdb connections
+gem5 Simulator System.  https://www.gem5.org
+gem5 is copyrighted software; use the --copyright option for details.
+
+gem5 version 24.0.0.1
+gem5 compiled Oct 26 2025 13:38:09
+gem5 started Oct 30 2025 18:57:01
+gem5 executing on maple10.doc.ic.ac.uk, pid 2371599
+command line: /homes/lp721/aca-gem5/gem5/build/X86/gem5.fast --outdir=LROB64_IQ43_LSQ21__BP_L128_G256_BTB128_RAS16/gem5.out /homes/lp721/aca-gem5/gem5/configs/deprecated/example/se.py --cpu-type=DerivO3CPU --caches --l2cache -c /homes/lp721/aca-gem5/benchmarks/gapbs/tc '--options=-u 10 -n 1 -k 16' -P 'system.cpu[:].numROBEntries=64' -P 'system.cpu[:].numIQEntries=43' -P 'system.cpu[:].LQEntries=21' -P 'system.cpu[:].SQEntries=21' -P 'system.cpu[:].numPhysIntRegs=64' -P 'system.cpu[:].numPhysFloatRegs=64' -P 'system.cpu[:].numPhysVecRegs=64' -P 'system.cpu[:].branchPred.localPredictorSize=128' -P 'system.cpu[:].branchPred.globalPredictorSize=256' -P 'system.cpu[:].branchPred.btb.numEntries=128' -P 'system.cpu[:].branchPred.ras.numEntries=16' -P 'system.cpu[:].branchPred.localHistoryTableSize=128' --l1d_size=128KiB --l1i_size=128KiB --l2_size=8MB
+
+info: Standard input is not a terminal, disabling listeners.
+**** REAL SIMULATION ****
+src/sim/simulate.cc:199: info: Entering event queue @ 0.  Starting simulation...
+src/sim/syscall_emul.cc:74: warn: ignoring syscall set_robust_list(...)
+src/sim/syscall_emul.cc:74: warn: ignoring syscall rseq(...)
+src/sim/mem_state.cc:448: info: Increasing stack size by one page.
+src/sim/syscall_emul.cc:74: warn: ignoring syscall mprotect(...)
+Generate Time:       0.00084
+Build Time:          0.00134
+Graph has 1024 nodes and 16111 undirected edges for degree: 15
+Trial Time:          0.00243
+Average Time:        0.00243
+Exiting @ tick 6335453500 because exiting with last active thread context
+
+    Simulated seconds = 0.006335
+    CPI = 1.480154
+    Area = 11.8095 mm^2
+    Peak Dynamic = 24.7192 W
+    Subthreshold Leakage = 19.3093 W
+    Gate Leakage = 0.0129197 W
+    Runtime Dynamic = 4.95208 W
+
+Results have been written to: LROB64_IQ43_LSQ21__BP_L128_G256_BTB128_RAS16/results
