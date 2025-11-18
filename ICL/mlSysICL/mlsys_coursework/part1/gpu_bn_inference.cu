@@ -69,17 +69,13 @@ __device__ void sum_arrays_shfl(double* shared_sum_data, double* shared_sq_sum_d
 }
 
 // --------------- Kernels --------
-__global__ void gpu_bn_inference_nchw(
+// It's better to calculate mean and variance in one pass using Var[X] = E[X^2] - (E[X])^2 instead of two separate passes
+__global__ void gpu_bn_compute_mean_var(
     const float* __restrict__ x,      // [N,C,H,W]
-    const float* __restrict__ gamma,  // [C]
-    const float* __restrict__ beta,   // [C]
-    float* __restrict__ y,            // [N,C,H,W]
-    int N, int C, int H, int W,
-    float eps)
-{   
-    // Idea: Each block handles one channel
-
-    // Computed constants useful later
+    double* __restrict__ mean,        // [C]
+    double* __restrict__ var,         // [C]
+    int N, int C, int H, int W
+) {
     size_t NHW = (size_t)N * H * W; // Elements per channel
     size_t CHW = (size_t)C * H * W;
     size_t HW = (size_t)H * W;
@@ -88,15 +84,10 @@ __global__ void gpu_bn_inference_nchw(
     
     if (c >= C) return;
 
-    // ---------------------------------------------
-    // Mean + Variance Calculation
-    // ---------------------------------------------
-
-    // It's better to calculate mean and variance in one pass1
     double local_sum_contribution = 0.0;
     double local_sq_sum_contribution = 0.0;
 
-    // Iterate over batches (N) and spatial HW to avoid division/mod operations
+    // Iterate over batches and spatial HW to avoid division/mod operations
     #pragma unroll
     for (int n_idx = 0; n_idx < N; ++n_idx) {
         size_t base = (size_t)n_idx * CHW + (size_t)c * HW;
@@ -109,22 +100,39 @@ __global__ void gpu_bn_inference_nchw(
         }
     }
     
-    // Add your variance contribution to appropriate shared memory location
     __shared__ double shared_sum_data[BLOCK_SIZE], shared_sq_sum_data[BLOCK_SIZE];
     shared_sum_data[threadIdx.x] = local_sum_contribution;
     shared_sq_sum_data[threadIdx.x] = local_sq_sum_contribution;
     __syncthreads();
 
-    // Sum the arrays in shared memory
-    sum_arrays(shared_sum_data, shared_sq_sum_data, BLOCK_SIZE);
+    sum_arrays_shfl(shared_sum_data, shared_sq_sum_data, BLOCK_SIZE);
 
-    double mean_c = static_cast<double>(shared_sum_data[0] / (double)(NHW));
-    double var_c = static_cast<double>(shared_sq_sum_data[0] / (double)(NHW)) - mean_c * mean_c;
+    if (threadIdx.x == 0) {
+        mean[c] = shared_sum_data[0] / (double)(NHW);
+        var[c] = shared_sq_sum_data[0] / (double)(NHW) - mean[c] * mean[c];
+    }
+}
 
-    // ---------------------------------------------
-    // Normalization + Affine Transformation
-    // ---------------------------------------------
-    double inv_std = rsqrtf(var_c + (double)eps); // Fast sqrt inverse computation
+__global__ void gpu_bn_inference_nchw(
+    const float* __restrict__ x,      // [N,C,H,W]
+    const float* __restrict__ gamma,  // [C]
+    const float* __restrict__ beta,   // [C]
+    const double* __restrict__ mean,  // [C]
+    const double* __restrict__ var,   // [C]
+    float* __restrict__ y,            // [N,C,H,W]
+    int N, int C, int H, int W,
+    float eps)
+{   
+    size_t NHW = (size_t)N * H * W; // Elements per channel
+    size_t CHW = (size_t)C * H * W;
+    size_t HW = (size_t)H * W;
+    int c = blockIdx.x; // 1d grid for channels
+    size_t elements_per_channel = NHW;
+    
+    if (c >= C) return;
+
+    double inv_std = rsqrtf(var[c] + (double)eps); // Fast sqrt inverse computation
+    double mean_c = static_cast<double>(mean[c]);
     double g = static_cast<double>(gamma[c]);
     double b = static_cast<double>(beta[c]);
 
@@ -150,14 +158,32 @@ void solve(const float* input, // [N,C,H,W] (input shape: batch, channel, height
     dim3 block(BLOCK_SIZE); // Example block size, can be tuned
     dim3 grid(C);    // One block per channel
 
+    // Allocate mean and variance arrays on device
+    double *d_mean, *d_var;
+
+    cudaMalloc(&d_mean, C * sizeof(double));
+    cudaMalloc(&d_var, C * sizeof(double));
+    // Compute mean and variance
+    gpu_bn_compute_mean_var<<<grid, block>>>(
+        input,
+        d_mean,
+        d_var,
+        N, C, H, W
+    );
+
     // Assertions useful for sum_arrays function
     gpu_bn_inference_nchw<<<grid, block>>>(
         input,
         gamma,
         beta,
+        d_mean,
+        d_var,
         output,
         N, C, H, W,
         eps
     );
+
+    cudaFree(d_mean);
+    cudaFree(d_var);
 }
 
