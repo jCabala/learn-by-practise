@@ -1,40 +1,40 @@
 #include "solve.h"
 #include <cuda_runtime.h>
-#include <cassert>
 
 #define FULL_MASK 0xffffffffu
 constexpr int THREADS_PER_WARP = 32;
-constexpr int BLOCK_SIZE = 256;
+constexpr int BLOCK_SIZE = 1024; // Better on last 2 kernels and slghtly worse than 256 on first 2 kernels.
 constexpr int NUM_WARPS_PER_BLOCK = BLOCK_SIZE / THREADS_PER_WARP;
-
 
 // ----------------- Array Sum Functions -------------------
 // I wanted to implement a shfl version as lectures suggested, this operation is very fast.
-// Unfortunately, the shfl version was not significantly faster than the syncthreads version.
+// Unfortunately, the shfl version was not significantly faster than the version that uses only syncthreads.
+// I assume that is because we this array syncing is still a neglegable part of the overall computation.
 
-__device__ void sum_arrays_syncthreads(double* shared_sum_data, double* shared_sq_sum_data, int num_elements) {
-    // Simple reduction using shared memory and __syncthreads()
-    for (int offset = num_elements / 2; offset > 0; offset /= 2) {
-        if (threadIdx.x < offset) {
-            shared_sum_data[threadIdx.x] += shared_sum_data[threadIdx.x + offset];
-            shared_sq_sum_data[threadIdx.x] += shared_sq_sum_data[threadIdx.x + offset];
-        }
-        __syncthreads();
-    }
-}
+// Syncthreads version for comparison:
+// __inline__ __device__ void sum_arrays_syncthreads(float* shared_sum_data, float* shared_sq_sum_data, const int num_elements) {
+//     // Simple reduction using shared memory and __syncthreads()
+//     for (int offset = num_elements / 2; offset > 0; offset /= 2) {
+//         if (threadIdx.x < offset) {
+//             shared_sum_data[threadIdx.x] += shared_sum_data[threadIdx.x + offset];
+//             shared_sq_sum_data[threadIdx.x] += shared_sq_sum_data[threadIdx.x + offset];
+//         }
+//         __syncthreads();
+//     }
+// }
 
-__device__ void sum_arrays_shfl(double* shared_sum_data, double* shared_sq_sum_data, int num_elements) {
+__inline__ __device__ void sum_arrays_shfl(float* shared_sum_data, float* shared_sq_sum_data) {
     // Idea: First reduce with warps using __shfl_down_sync, then final reduction with __syncthreads()
-    // This implementation assumes that NUM_OF_WARPS_PER_BLOCK <= THREADS_PER_WARP
+    // NOTE: This implementation assumes that NUM_WARPS_PER_BLOCK <= THREADS_PER_WARP
 
-    // Reduction within warps
-    int lane_id = threadIdx.x % THREADS_PER_WARP;
-    int warp_id = threadIdx.x / THREADS_PER_WARP;
+    const int lane_id = threadIdx.x % THREADS_PER_WARP;
+    const int warp_id = threadIdx.x / THREADS_PER_WARP;
 
-    // First stage: Warp-level reduction
-    double local_sum = shared_sum_data[threadIdx.x];
-    double local_sq_sum = shared_sq_sum_data[threadIdx.x];
+    // --------------- Reduction within warps -------------------------
+    float local_sum = shared_sum_data[threadIdx.x];
+    float local_sq_sum = shared_sq_sum_data[threadIdx.x];
 
+    #pragma unroll
     for (int offset = THREADS_PER_WARP / 2; offset > 0; offset /= 2) {
         local_sum += __shfl_down_sync(FULL_MASK, local_sum, offset);
         local_sq_sum += __shfl_down_sync(FULL_MASK, local_sq_sum, offset);
@@ -47,12 +47,13 @@ __device__ void sum_arrays_shfl(double* shared_sum_data, double* shared_sq_sum_d
     }
     __syncthreads();
 
-    // Final reduction using the first warp
+    // ------------------ Final reduction across warps -------------------------
     if (warp_id == 0) {
         // The final_sum should be 0 for threads beyond NUM_WARPS_PER_BLOCK (that's how many elements we need to sum)
-        double final_sum = (lane_id < NUM_WARPS_PER_BLOCK) ? shared_sum_data[lane_id] : 0.0;
-        double final_sq_sum = (lane_id < NUM_WARPS_PER_BLOCK) ? shared_sq_sum_data[lane_id] : 0.0;
+        float final_sum = (lane_id < NUM_WARPS_PER_BLOCK) ? shared_sum_data[lane_id] : 0.0f;
+        float final_sq_sum = (lane_id < NUM_WARPS_PER_BLOCK) ? shared_sq_sum_data[lane_id] : 0.0f;
 
+        #pragma unroll
         for (int offset = THREADS_PER_WARP / 2; offset > 0; offset /= 2) {
             final_sum += __shfl_down_sync(FULL_MASK, final_sum, offset);
             final_sq_sum += __shfl_down_sync(FULL_MASK, final_sq_sum, offset);
@@ -69,81 +70,59 @@ __device__ void sum_arrays_shfl(double* shared_sum_data, double* shared_sq_sum_d
 }
 
 // --------------- Kernels --------
-// It's better to calculate mean and variance in one pass using Var[X] = E[X^2] - (E[X])^2 instead of two separate passes
-__global__ void gpu_bn_compute_mean_var(
-    const float* __restrict__ x,      // [N,C,H,W]
-    double* __restrict__ mean,        // [C]
-    double* __restrict__ var,         // [C]
-    int N, int C, int H, int W
-) {
-    size_t NHW = (size_t)N * H * W; // Elements per channel
-    size_t CHW = (size_t)C * H * W;
-    size_t HW = (size_t)H * W;
-    int c = blockIdx.x; // 1d grid for channels
-    size_t elements_per_channel = NHW;
-    
-    if (c >= C) return;
-
-    double local_sum_contribution = 0.0;
-    double local_sq_sum_contribution = 0.0;
-
-    // Iterate over batches and spatial HW to avoid division/mod operations
-    #pragma unroll
-    for (int n_idx = 0; n_idx < N; ++n_idx) {
-        size_t base = (size_t)n_idx * CHW + (size_t)c * HW;
-        for (int hw = threadIdx.x; hw < (int)HW; hw += BLOCK_SIZE) {
-            size_t index = base + (size_t)hw;
-
-            double d = static_cast<double>(x[index]);
-            local_sum_contribution += d;
-            local_sq_sum_contribution += d * d;
-        }
-    }
-    
-    __shared__ double shared_sum_data[BLOCK_SIZE], shared_sq_sum_data[BLOCK_SIZE];
-    shared_sum_data[threadIdx.x] = local_sum_contribution;
-    shared_sq_sum_data[threadIdx.x] = local_sq_sum_contribution;
-    __syncthreads();
-
-    sum_arrays_shfl(shared_sum_data, shared_sq_sum_data, BLOCK_SIZE);
-
-    if (threadIdx.x == 0) {
-        mean[c] = shared_sum_data[0] / (double)(NHW);
-        var[c] = shared_sq_sum_data[0] / (double)(NHW) - mean[c] * mean[c];
-    }
-}
-
 __global__ void gpu_bn_inference_nchw(
     const float* __restrict__ x,      // [N,C,H,W]
     const float* __restrict__ gamma,  // [C]
     const float* __restrict__ beta,   // [C]
-    const double* __restrict__ mean,  // [C]
-    const double* __restrict__ var,   // [C]
     float* __restrict__ y,            // [N,C,H,W]
-    int N, int C, int H, int W,
-    float eps)
+    const int N, const int C, const int H, const int W,
+    const float eps)
 {   
-    size_t NHW = (size_t)N * H * W; // Elements per channel
-    size_t CHW = (size_t)C * H * W;
-    size_t HW = (size_t)H * W;
-    int c = blockIdx.x; // 1d grid for channels
-    size_t elements_per_channel = NHW;
+    const int c = blockIdx.x; // Channel
+    const int tidx = threadIdx.x; // Thread idx within a block
+    const int NHW = N * H * W; // Elements per channel
+    const int CHW = C * H * W;
+    const int HW = H * W;
+    const int cHW = c * HW;
     
-    if (c >= C) return;
+    // ------------------- Mean and Variance Computation -------------------
+    float local_sum_contribution = 0.0;
+    float local_sq_sum_contribution = 0.0;
 
-    double inv_std = rsqrtf(var[c] + (double)eps); // Fast sqrt inverse computation
-    double mean_c = static_cast<double>(mean[c]);
-    double g = static_cast<double>(gamma[c]);
-    double b = static_cast<double>(beta[c]);
-
-    // Normalize and apply affine transform using nested loops (no / or %)
-    #pragma unroll
     for (int n_idx = 0; n_idx < N; ++n_idx) {
-        size_t base = (size_t)n_idx * CHW + (size_t)c * HW;
-        for (int hw = threadIdx.x; hw < (int)HW; hw += BLOCK_SIZE) {
-            size_t index = base + (size_t)hw;
-            double xn = (static_cast<double>(x[index]) - mean_c) * inv_std;
-            y[index] = static_cast<float>(g * xn + b);
+        const size_t base = (size_t) (n_idx * CHW + cHW);
+        for (int hw = tidx; hw < HW; hw += BLOCK_SIZE) {
+            const size_t index = base + (size_t) hw;
+
+            const float f = __ldg(&x[index]);
+            local_sum_contribution += f;
+            local_sq_sum_contribution += f * f;
+        }
+    }
+    
+    __shared__ float shared_sum_data[BLOCK_SIZE], shared_sq_sum_data[BLOCK_SIZE];
+    shared_sum_data[tidx] = local_sum_contribution;
+    shared_sq_sum_data[tidx] = local_sq_sum_contribution;
+    __syncthreads();
+
+    sum_arrays_shfl(shared_sum_data, shared_sq_sum_data);
+
+    float mean_c = shared_sum_data[0] / (float) NHW;
+    float var_c = shared_sq_sum_data[0] / (float) NHW - (mean_c * mean_c);
+
+    // --------------------------- Normalization + Affine  ---------------------------
+    const float g = __ldg(&gamma[c]);
+    const float b = __ldg(&beta[c]);
+    float inv_std = rsqrtf(var_c + eps); // Fast sqrt inverse computation
+    float neg_mean_times_inv_std = -1 * mean_c * inv_std; // Precomputed for efficiency
+
+    for (int n_idx = 0; n_idx < N; ++n_idx) {
+        const size_t base = (size_t) (n_idx * CHW + cHW);
+        for (int hw = tidx; hw < HW; hw += BLOCK_SIZE) {
+            const size_t index = base + (size_t) hw;
+            const float xv = __ldg(&x[index]);
+            const float xn = __fmaf_rn(inv_std, xv, neg_mean_times_inv_std);
+            y[index] = __fmaf_rn(g, xn, b);
         }
     }
 }
@@ -155,35 +134,16 @@ void solve(const float* input, // [N,C,H,W] (input shape: batch, channel, height
            int N, int C, int H, int W, float eps)
 {
     if (N <= 0 || C <= 0 || H <= 0 || W <= 0) return;
-    dim3 block(BLOCK_SIZE); // Example block size, can be tuned
-    dim3 grid(C);    // One block per channel
+    dim3 block(BLOCK_SIZE);
+    dim3 grid(C); // One block per channel
 
-    // Allocate mean and variance arrays on device
-    double *d_mean, *d_var;
-
-    cudaMalloc(&d_mean, C * sizeof(double));
-    cudaMalloc(&d_var, C * sizeof(double));
-    // Compute mean and variance
-    gpu_bn_compute_mean_var<<<grid, block>>>(
-        input,
-        d_mean,
-        d_var,
-        N, C, H, W
-    );
-
-    // Assertions useful for sum_arrays function
     gpu_bn_inference_nchw<<<grid, block>>>(
         input,
         gamma,
         beta,
-        d_mean,
-        d_var,
         output,
         N, C, H, W,
         eps
     );
-
-    cudaFree(d_mean);
-    cudaFree(d_var);
 }
 
