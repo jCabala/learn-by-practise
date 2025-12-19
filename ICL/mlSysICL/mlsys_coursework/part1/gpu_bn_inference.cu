@@ -3,7 +3,7 @@
 
 #define FULL_MASK 0xffffffffu
 constexpr int THREADS_PER_WARP = 32;
-constexpr int BLOCK_SIZE = 1024; // Better on last 2 kernels and slghtly worse than 256 on first 2 kernels.
+constexpr int BLOCK_SIZE = 1024; // Better on last 2 kernels and slghtly worse than on first 2 kernels.
 constexpr int NUM_WARPS_PER_BLOCK = BLOCK_SIZE / THREADS_PER_WARP;
 
 // ----------------- Array Sum Functions -------------------
@@ -24,8 +24,7 @@ constexpr int NUM_WARPS_PER_BLOCK = BLOCK_SIZE / THREADS_PER_WARP;
 // }
 
 __inline__ __device__ void sum_arrays_shfl(float* shared_sum_data, float* shared_sq_sum_data) {
-    // Idea: First reduce with warps using __shfl_down_sync, then final reduction with __syncthreads()
-    // NOTE: This implementation assumes that NUM_WARPS_PER_BLOCK <= THREADS_PER_WARP
+    // This implementation assumes that NUM_WARPS_PER_BLOCK <= THREADS_PER_WARP
 
     const int lane_id = threadIdx.x % THREADS_PER_WARP;
     const int warp_id = threadIdx.x / THREADS_PER_WARP;
@@ -40,7 +39,6 @@ __inline__ __device__ void sum_arrays_shfl(float* shared_sum_data, float* shared
         local_sq_sum += __shfl_down_sync(FULL_MASK, local_sq_sum, offset);
     }
 
-    // Write warp results to shared memory
     if (lane_id == 0) {
         shared_sum_data[warp_id] = local_sum;
         shared_sq_sum_data[warp_id] = local_sq_sum;
@@ -84,7 +82,9 @@ __global__ void gpu_bn_inference_nchw(
     const int CHW = C * H * W;
     const int HW = H * W;
     const int cHW = c * HW;
-    
+    // ------------------- Shared memory -----------------------------------
+    __shared__ float s_sum_data[BLOCK_SIZE], s_sq_sum_data[BLOCK_SIZE];
+
     // ------------------- Mean and Variance Computation -------------------
     float local_sum_contribution = 0.0;
     float local_sq_sum_contribution = 0.0;
@@ -100,20 +100,20 @@ __global__ void gpu_bn_inference_nchw(
         }
     }
     
-    __shared__ float shared_sum_data[BLOCK_SIZE], shared_sq_sum_data[BLOCK_SIZE];
-    shared_sum_data[tidx] = local_sum_contribution;
-    shared_sq_sum_data[tidx] = local_sq_sum_contribution;
+    
+    s_sum_data[tidx] = local_sum_contribution;
+    s_sq_sum_data[tidx] = local_sq_sum_contribution;
     __syncthreads();
 
-    sum_arrays_shfl(shared_sum_data, shared_sq_sum_data);
+    sum_arrays_shfl(s_sum_data, s_sq_sum_data);
 
-    float mean_c = shared_sum_data[0] / (float) NHW;
-    float var_c = shared_sq_sum_data[0] / (float) NHW - (mean_c * mean_c);
+    float mean_c = s_sum_data[0] / (float) NHW;
+    float var_c = s_sq_sum_data[0] / (float) NHW - (mean_c * mean_c);
 
     // --------------------------- Normalization + Affine  ---------------------------
     const float g = __ldg(&gamma[c]);
     const float b = __ldg(&beta[c]);
-    float inv_std = rsqrtf(var_c + eps); // Fast sqrt inverse computation
+    float inv_std = rsqrtf(var_c + eps); // Fast sqrt inverse
     float neg_mean_times_inv_std = -1 * mean_c * inv_std; // Precomputed for efficiency
 
     for (int n_idx = 0; n_idx < N; ++n_idx) {

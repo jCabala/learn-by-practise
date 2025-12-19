@@ -1,10 +1,16 @@
 #include "solve.h"
 #include <cuda_runtime.h>
+#include <cassert>
 
 #define FULL_MASK 0xffffffffu
 constexpr int THREADS_PER_WARP = 32;
 constexpr int BLOCK_DIM = 32;
 constexpr int BLOCK_SIZE = BLOCK_DIM * BLOCK_DIM;
+constexpr int MAX_KERNEL_SIZE = 32 * 32; // Max kernel size supported. Spec says KH, KW <= 32
+constexpr int BATCHES_PER_BLOCK = 4;
+
+#define CEIL_DIV(a, b) (((a) + (b) - 1) / (b))
+
 
 // Note: 1. External libraries are not allowed
 //       2. The solve function signature must keep unchanged
@@ -20,8 +26,9 @@ __global__ void gpu_dwconv2d(
     int stride_h, int stride_w,
     int OH, int OW)
 {   
-    const int c = blockIdx.z; /// N; // Channel index
-    //const int n = blockIdx.z % N; // Batch index
+    const int c = blockIdx.z % C;
+    const int n_base = (blockIdx.z / C) * BATCHES_PER_BLOCK;
+    const int tidx = threadIdx.x;
 
     const int HW = H * W;
     const int CHW = C * HW;
@@ -30,39 +37,44 @@ __global__ void gpu_dwconv2d(
     const int COHOW = C * OHOW;
     const int KHKW = KH * KW;
 
-    // Each location of output is written by one thread
-
-    __shared__ float s_k[BLOCK_SIZE], s_x[BLOCK_SIZE];
-
     const int ow = blockIdx.x * BLOCK_DIM + (threadIdx.x % BLOCK_DIM);
     const int oh = blockIdx.y * BLOCK_DIM + (threadIdx.x / BLOCK_DIM);
+    const int h0 = oh * stride_h - pad_h;
+    const int w0 = ow * stride_w - pad_w;
 
-    
+    // -------------------- Preload kernel to shared memory --------------------
+    __shared__ float s_k[MAX_KERNEL_SIZE];
+    if (tidx < KHKW) {
+        s_k[tidx] = __ldg(&k[(size_t)c * KHKW + (size_t)tidx]);
+    }
+    __syncthreads();
 
+
+    // ---------------------- Compute convolution --------------------
     if (oh < OH && ow < OW) {
-        for (int n = 0; n < N; ++n) {
-            int h0 = oh * stride_h - pad_h;
-            int w0 = ow * stride_w - pad_w;
+        #pragma unroll
+        for (int n_rem = 0; n_rem < BATCHES_PER_BLOCK; ++n_rem) {
+            int n = n_base + n_rem;
+            if (n >= N) break;
 
             float acc = 0.0f;
+
             for (int kh = 0; kh < KH; ++kh) { // kernel height
                 int ih = h0 + kh;
                 if ((unsigned)ih >= (unsigned)H) continue;
+
                 for (int kw = 0; kw < KW; ++kw) { // kernel width
                     int iw = w0 + kw;
                     if ((unsigned)iw >= (unsigned)W) continue;
+                    
                     float xv = __ldg(&x[(size_t)n * CHW + (size_t)cHW + (size_t)ih * W + (size_t)iw]);
-                    float kv = __ldg(&k[(size_t)c * KHKW + (size_t)kh * KW + (size_t)kw]);
+                    float kv = s_k[(size_t)kh * KW + (size_t)kw];
                     acc = __fmaf_rn(xv, kv, acc);
                 }
             }
             y[(size_t)n * COHOW + (size_t)c * OHOW + (size_t)oh * OW + (size_t)ow] = acc;
         }
     }
-}
-
-int ceil_div(int a, int b) {
-    return (a + b - 1) / b;
 }
 
 void solve(const float* input,      // [N,C,H,W] 
@@ -79,13 +91,12 @@ void solve(const float* input,      // [N,C,H,W]
     int OW = (W + 2*pad_w - KW) / stride_w + 1;
     if (OH <= 0 || OW <= 0) return;
 
+    assert(BLOCK_SIZE >= MAX_KERNEL_SIZE);
+    assert(KH * KW <= MAX_KERNEL_SIZE);
 
-    // Idea one: dim Z of grid will be for number of channels
-    // Idea two: each grid XY block will compute one output channel for all N images
-    // Idea three: At that point we basically have matrix multiplication
-   
-    dim3 block(BLOCK_DIM * BLOCK_DIM); // Coalescing
-    dim3 grid(ceil_div(OW, BLOCK_DIM), ceil_div(OH, BLOCK_DIM), C); // One "XY grid block" per channel
+    dim3 block(BLOCK_DIM * BLOCK_DIM);
+    // Each block processes BATCHES_PER_BLOCK batches for a single channel
+    dim3 grid(CEIL_DIV(OW, BLOCK_DIM), CEIL_DIV(OH, BLOCK_DIM), C * CEIL_DIV(N, BATCHES_PER_BLOCK));
 
     gpu_dwconv2d<<<grid, block>>>(
         input, kernel, output,

@@ -1,0 +1,1 @@
+// https://szkopul.edu.pl/problemset/problem/cSa80AKpjHR8FlWE4BCpLGT3/site/?key=statement
