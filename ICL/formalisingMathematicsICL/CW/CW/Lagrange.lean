@@ -12,6 +12,7 @@ variable {K : Type*} [Field K]
 -- Helper Lemmas
 -- =========================
 lemma inj_diff_at_erase
+    {K : Type*} [Field K]
     {ι : Type*} [DecidableEq ι]
     {s : Finset ι}
     {v : ι → K}
@@ -21,6 +22,7 @@ lemma inj_diff_at_erase
     (hi : i ∈ s)
     (hj : j ∈ s.erase i) :
     v i ≠ v j := by
+    -- API to unfold Set.InjOn
     unfold Set.InjOn at hv
     intro hVij
     apply hv at hVij
@@ -37,6 +39,7 @@ lemma inj_diff_at_erase
       apply Finset.mem_of_mem_erase at hj
       exact hj
 
+-- Was very annoying to find something like that so I wrote it myself
 lemma eval_poly_sum_eq_eval_sum_poly
     {K : Type*} [Semiring K]
     {ι : Type*}
@@ -57,7 +60,6 @@ lemma eval_poly_sum_eq_eval_sum_poly
 -- ================================
 -- Lagrange Basis Polynomial Lemmas
 -- ================================
-
 lemma lagrange_basis_kronecker_delta
     {K : Type*} [Field K]
     {ι : Type*} [DecidableEq ι]
@@ -148,7 +150,6 @@ lemma lagrange_basis_degree_lt
 -- ============================================================
 -- Main Theorem: Existence of Lagrange Interpolating Polynomial
 -- ============================================================
-
 theorem existence_of_lagrange_interpolating_polynomial
     {K : Type*} [Field K]
     (s : Finset ι) -- Index set
@@ -158,44 +159,46 @@ theorem existence_of_lagrange_interpolating_polynomial
     (hv : Set.InjOn v (s : Set ι)) :
     ∃ p : K[X], p.natDegree < s.card ∧ ∀ i ∈ s, p.eval (v i) = f i := by
   classical
-  -- We construct the interpolating polynomial
-  let p : K[X] := ∑ i ∈ s, (f i) • (Lagrange.basis s v i)
-  use p
+  -- We construct the interpolating polynomial p and prove its properties
+  use (∑ i ∈ s, (f i) • (Lagrange.basis s v i))
   constructor
-  · -- Prove that degree p < s.car
-    -- Unwrap the sum definition
-    unfold p
-    -- Cases on s being empty or nonempty
+  · -- Prove that degree p < s.card
+    -- Show that each summand has degree < s.card
     have hDegs : ∀ i ∈ s, (f i • Lagrange.basis s v i).natDegree < s.card := by
       intro i hi
-      have hBasisDeg := lagrange_basis_degree_lt s v hv hs i hi
       have hNatDeg :
           (f i • Lagrange.basis s v i).natDegree ≤ (Lagrange.basis s v i).natDegree := by
-        simpa using (natDegree_smul_le (a := f i) (p := Lagrange.basis s v i))
-      grind only -- Remove the grind if possible
-    have hle : (∑ i ∈ s, f i • Lagrange.basis s v i).natDegree ≤ s.sup (fun i => (f i • Lagrange.basis s v i).natDegree) := by
-      simpa using (natDegree_sum_le (s := s) (f := fun i => f i • Lagrange.basis s v i))
-    refine lt_of_le_of_lt hle ?_
-    rw [Finset.sup_lt_iff]
-    exact hDegs
-    simp only [Nat.bot_eq_zero, Finset.card_pos]
-    exact hs
-  · -- Prove that p touches points (v i, f i) for i ∈ s
+          -- <= because smul can lower degree if f i = 0
+        apply (natDegree_smul_le (a := f i) (p := Lagrange.basis s v i))
+      exact lt_of_le_of_lt hNatDeg (lagrange_basis_degree_lt s v hv hs i hi)
+    -- Now show that the sum has degree < s.card by showing that its sup is < s.card
+    refine lt_of_le_of_lt (b := s.sup (fun i => (f i • Lagrange.basis s v i).natDegree)) ?_ ?_
+    · -- Show that natDegree p ≤ sup of degrees of summands
+      apply (natDegree_sum_le (s := s) (f := fun i => f i • Lagrange.basis s v i))
+    · -- Show that sup of degrees of summands < s.card
+      rw [Finset.sup_lt_iff]
+      · exact hDegs
+      · -- Show that s is nonempty
+        simp only [Nat.bot_eq_zero, Finset.card_pos]
+        exact hs
+  · -- Prove that p interpolates points (v i, f i) for i ∈ s
     intro i hi
-    -- Prove that p.eval (v i) = sum (f j • Lagrange.basis s v j).eval (v i)
-    simp only [p]
+    -- Simplify the eval of the sum to sum of evals with scalars taken out
     rw [eval_poly_sum_eq_eval_sum_poly]
-    simp only [eval_smul, smul_eq_mul] -- Gets the scalar multiplication out of the eval
+    simp only [eval_smul, smul_eq_mul]
     -- Now use the kronecker delta property
-    rw [Finset.sum_eq_single i] -- SAVIOR!!!!!
-    · rw [lagrange_basis_kronecker_delta s v hv hi]
+    -- Show that only one summand is nonzero so the sum reduces to that summand
+    rw [Finset.sum_eq_single i]
+    · -- Show that the summand at i is f i
+      rw [lagrange_basis_kronecker_delta s v hv hi]
       simp only [↓reduceIte, mul_one]
-    · intro b hb hBNeqi
+    · -- Show that for b ∈ s, b ≠ i, the summand is zero
+      intro b hb hBNeqi
       rw [lagrange_basis_kronecker_delta s v hv hi]
       simp only [mul_ite, mul_one, mul_zero, ite_eq_right_iff]
       intro hBEqi
       contradiction
-    intro hi'
-    contradiction
-
+    · -- Additional goal that contradicts with i ∈ s
+      intro hi'
+      contradiction
 end Lagrange
