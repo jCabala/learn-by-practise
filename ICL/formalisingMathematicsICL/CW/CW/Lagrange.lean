@@ -8,13 +8,35 @@ namespace Lagrange
 
 variable {K : Type*} [Field K]
 
-/-!
-# Lagrange Interpolation (existence)
--/
+-- =========================
+-- Helper Lemmas
+-- =========================
+lemma inj_diff_at_erase
+    {ι : Type*} [DecidableEq ι]
+    {s : Finset ι}
+    {v : ι → K}
+    (hv : Set.InjOn v (s : Set ι))
+    {i : ι}
+    {j : ι}
+    (hi : i ∈ s)
+    (hj : j ∈ s.erase i) :
+    v i ≠ v j := by
+    unfold Set.InjOn at hv
+    intro hVij
+    apply hv at hVij
+    · -- Show False (main goal)
+      -- Contradict i ∈ s.erase i
+      rw [hVij] at hj
+      rw [Finset.mem_erase] at hj
+      obtain hFalse := hj.1
+      contradiction
+    · -- Show that i ∈ s
+      exact hi
+    · -- Show that j ∈ s
+      simp only [SetLike.mem_coe]
+      apply Finset.mem_of_mem_erase at hj
+      exact hj
 
--- =========================
--- Polynomial Helpers
--- =========================
 lemma eval_poly_sum_eq_eval_sum_poly
     {K : Type*} [Semiring K]
     {ι : Type*}
@@ -32,9 +54,9 @@ lemma eval_poly_sum_eq_eval_sum_poly
     simp only [Finset.sum_insert ha]
     simp only [eval_add, IH]
 
--- ========================
--- Lagrange Basis Polynomial Helpers
--- =======================
+-- ================================
+-- Lagrange Basis Polynomial Lemmas
+-- ================================
 
 lemma lagrange_basis_kronecker_delta
     {K : Type*} [Field K]
@@ -61,19 +83,7 @@ lemma lagrange_basis_kronecker_delta
     have hVjx : (v j - v x) ≠ 0 := by
       refine sub_ne_zero.mpr ?_
       unfold Set.InjOn at hv
-      intro hVjxEq0
-      apply hv at hVjxEq0 -- Introduces 2 more goals: j ∈ s and x ∈ s
-      · -- Show False (main goal)
-        rw [hVjxEq0] at hx
-        rw [Finset.mem_erase] at hx
-        obtain hFalse := hx.1
-        contradiction
-      · -- Show that j ∈ s
-        exact hj
-      · -- Show that x ∈ s
-        simp only [SetLike.mem_coe]
-        apply Finset.mem_of_mem_erase at hx
-        exact hx
+      exact inj_diff_at_erase hv hj hx
     -- Simplify the product to 1. jVjx necessary for inv_mul_cancel₀
     simp only [ne_eq, hVjx, not_false_eq_true, inv_mul_cancel₀]
   · -- Case i ≠ j
@@ -102,62 +112,42 @@ lemma lagrange_basis_degree_lt
     (Lagrange.basis s v i).natDegree < s.card := by
   classical
   simp only [Lagrange.basis]
-  rw [natDegree_prod']
-  · have hDeg: ∀ j ∈ s.erase i, (basisDivisor (v i) ( v j)).natDegree = 1 := by
+  have vi_ne_vj (j : ι) (hj : j ∈ s.erase i) :  ¬C (v i - v j)⁻¹ = 0 := by
+    simp only [map_eq_zero, inv_eq_zero]
+    intro hVij
+    rw [sub_eq_zero] at hVij
+    have hContradict: v i ≠ v j := inj_diff_at_erase hv hi hj
+    contradiction
+  rw [natDegree_prod]
+  · -- Show that the sum of degrees is less than s.card
+    have hDeg: ∀ j ∈ s.erase i, (basisDivisor (v i) (v j)).natDegree = 1 := by
+      -- Show that each factor has degree 1
       intro j hj
-      simp only [basisDivisor]
-      rw [natDegree_mul]
-      rw [natDegree_X_sub_C]
-      rw [natDegree_C]
-      · simp only [ne_eq, map_eq_zero, inv_eq_zero]
-        · rw [sub_eq_zero]
-          intro hVij
-          apply hv at hVij
-          rw [hVij] at hj
-          rw [Finset.mem_erase] at hj
-          obtain hFalse := hj.1
-          contradiction
-          · simpa only [SetLike.mem_coe]
-          · simp only [SetLike.mem_coe]
-            rw [Finset.mem_erase] at hj
-            exact hj.2
-      · exact X_sub_C_ne_zero (v j)
-    rw [Finset.card_eq_sum_ones]
+      unfold basisDivisor
+      rw [natDegree_mul, natDegree_X_sub_C, natDegree_C]
+      · -- Show that the inverse constant is not zero
+        apply vi_ne_vj j hj
+      · -- Show that the monomial is not zero
+        exact X_sub_C_ne_zero (v j)
     rw [Finset.sum_congr rfl hDeg]
+    -- Wrap the sum into cardinality of s.erase i
     simp only [Finset.sum_const, smul_eq_mul, mul_one, gt_iff_lt]
     rw [Finset.card_erase_of_mem hi]
     simp only [tsub_lt_self_iff, Finset.card_pos, zero_lt_one, and_true]
     exact hs
-  · rw [Finset.prod_ne_zero_iff]
-    intro x hx
-    rw [leadingCoeff_ne_zero]
+  · -- Show that each basisDivisor (v i) (v j) is not zero
+    intro j hj
     unfold basisDivisor
-    have hXnotJ : x ≠ i := by
-      refine Finset.ne_of_mem_erase hx
-    have hVxnotVj : v x ≠ v i := by
-      intro hVxj
-      apply hv at hVxj
-      contradiction
-      simp only [SetLike.mem_coe]
-      apply Finset.mem_of_mem_erase at hx
-      exact hx
-      simp only [SetLike.mem_coe]
-      exact hi
-      -- Re-do this step. I don't fully understand why it became 3 goals all of the sudden.
-    have hVxSubVjNot0 : (v i - v x) ≠ 0 := by
-      intro hVxSubVj0
-      simp only [sub_eq_zero] at hVxSubVj0
-      apply hVxnotVj
-      exact hVxSubVj0.symm
-    simp only [ne_eq, mul_eq_zero, map_eq_zero, inv_eq_zero, not_or]
+    simp only [ne_eq, mul_eq_zero, not_or]
     constructor
-    · convert hVxSubVjNot0
-    · exact X_sub_C_ne_zero (v x)
+    · -- Show that the inverse constant is not zero
+      apply vi_ne_vj j hj
+    · -- Show that the monomial is not zero
+      exact X_sub_C_ne_zero (v j)
 
-
--- =========================
+-- ============================================================
 -- Main Theorem: Existence of Lagrange Interpolating Polynomial
--- =========================
+-- ============================================================
 
 theorem existence_of_lagrange_interpolating_polynomial
     {K : Type*} [Field K]
@@ -168,6 +158,7 @@ theorem existence_of_lagrange_interpolating_polynomial
     (hv : Set.InjOn v (s : Set ι)) :
     ∃ p : K[X], p.natDegree < s.card ∧ ∀ i ∈ s, p.eval (v i) = f i := by
   classical
+  -- We construct the interpolating polynomial
   let p : K[X] := ∑ i ∈ s, (f i) • (Lagrange.basis s v i)
   use p
   constructor
@@ -182,16 +173,13 @@ theorem existence_of_lagrange_interpolating_polynomial
           (f i • Lagrange.basis s v i).natDegree ≤ (Lagrange.basis s v i).natDegree := by
         simpa using (natDegree_smul_le (a := f i) (p := Lagrange.basis s v i))
       grind only -- Remove the grind if possible
-
     have hle : (∑ i ∈ s, f i • Lagrange.basis s v i).natDegree ≤ s.sup (fun i => (f i • Lagrange.basis s v i).natDegree) := by
       simpa using (natDegree_sum_le (s := s) (f := fun i => f i • Lagrange.basis s v i))
-
     refine lt_of_le_of_lt hle ?_
     rw [Finset.sup_lt_iff]
     exact hDegs
     simp only [Nat.bot_eq_zero, Finset.card_pos]
     exact hs
-
   · -- Prove that p touches points (v i, f i) for i ∈ s
     intro i hi
     -- Prove that p.eval (v i) = sum (f j • Lagrange.basis s v j).eval (v i)
