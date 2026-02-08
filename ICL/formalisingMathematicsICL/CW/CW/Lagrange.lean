@@ -6,8 +6,6 @@ open Polynomial
 
 namespace Lagrange
 
-variable {K : Type*} [Field K]
-
 -- =========================
 -- Helper Lemmas
 -- =========================
@@ -39,7 +37,7 @@ lemma inj_diff_at_erase
       apply Finset.mem_of_mem_erase at hj
       exact hj
 
--- Was very annoying to find something like that so I wrote it myself
+-- Couldn't find anythinng like that in Mathlib so I wrote it myself
 lemma eval_poly_sum_eq_eval_sum_poly
     {K : Type*} [Semiring K]
     {ι : Type*}
@@ -49,7 +47,7 @@ lemma eval_poly_sum_eq_eval_sum_poly
     (∑ i ∈ s, f i).eval x = ∑ i ∈ s, (f i).eval x := by
   classical
   -- Let's try by induction on the finset s
-  refine Finset.induction_on s ?h0 ?hstep
+  refine Finset.induction_on s ?_ ?_
   · -- Base case: s = ∅
     simp only [Finset.sum_empty, eval_zero]
   · -- Inductive step
@@ -152,6 +150,7 @@ lemma lagrange_basis_degree_lt
 -- ============================================================
 theorem existence_of_lagrange_interpolating_polynomial
     {K : Type*} [Field K]
+    {ι : Type*} [DecidableEq ι]
     (s : Finset ι) -- Index set
     (hs : s.Nonempty)
     (v : ι → K)
@@ -191,7 +190,7 @@ theorem existence_of_lagrange_interpolating_polynomial
     rw [Finset.sum_eq_single i]
     · -- Show that the summand at i is f i
       rw [lagrange_basis_kronecker_delta s v hv hi]
-      simp only [↓reduceIte, mul_one]
+      simp only [reduceIte, mul_one]
     · -- Show that for b ∈ s, b ≠ i, the summand is zero
       intro b hb hBNeqi
       rw [lagrange_basis_kronecker_delta s v hv hi]
