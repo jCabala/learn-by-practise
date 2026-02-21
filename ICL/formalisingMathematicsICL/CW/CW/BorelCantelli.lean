@@ -109,14 +109,13 @@ theorem first_borel_cantelli_lemma
          `tendsto_measure_iInter_atTop`.
          Problem: our goal is NNReal convergence, but `tendsto_measure_iInter_atTop` gives
          ENNReal convergence. The next step translates ENNReal convergence to NNReal convergence
-         via `.comp` with `ENNReal.tendsto_toNNReal`.
+         via `ENNReal.tendsto_toNNReal.comp`.
          After that step, the remaining goal uses ↑P (the coercion to Measure α, which is
-         ENNReal-valued) instead of the original NNReal-valued P. It also adds the side goal of
-         showing that P (⋂ k, B k) ≠ ⊤ (which holds because P is a probability measure). -/
+         ENNReal-valued) instead of the original NNReal-valued P. -/
       apply (ENNReal.tendsto_toNNReal ?_).comp
       · -- Original goal but the NNReal version
         have hf : ∃ i, (↑P : Measure α) (B i) ≠ ⊤ := by
-          -- Because P is a probability measure, it is finite, so P (B 0) ≠ ⊤. So we can take i = 0.
+          -- Because P is a probability measure, it is always finite so we can take any i.
           use 0
           simp only [ne_eq, measure_ne_top, not_false_eq_true]
         have hBnm : ∀ k: ℕ, NullMeasurableSet (B k) P := by
@@ -125,7 +124,8 @@ theorem first_borel_cantelli_lemma
           specialize hB_meas k
           apply hB_meas
         exact tendsto_measure_iInter_atTop (μ := (↑P : Measure α)) hBnm hB_anti hf
-      · apply measure_ne_top (↑P : Measure α) (⋂ k, B k)
+      · -- Show that the limit is finite
+        apply measure_ne_top (↑P : Measure α) (⋂ k, B k)
   --------------------------------------------------------------------------------------------------
   ---------------------------------- P (B k) ≤ ∑_{n ≥ k} P (A n) -----------------------------------
   --------------------------------------------------------------------------------------------------
