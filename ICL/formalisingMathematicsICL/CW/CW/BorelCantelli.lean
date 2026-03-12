@@ -68,12 +68,7 @@ lemma limsup_eq_iInter_B :
     obtain ⟨n, hn, hxn⟩ := (hB_mem k).mp (hx k) -- mp: One direction of the iff
     -- Use n - k so that A ((n - k) + k) = A n.
     use n - k
-    -- Prove n - k + k = n and use assumption
-    rw [Nat.sub_add_cancel]
-    · -- x ∈ A n
-      exact hxn
-    · -- k <= n (addtional goal needed by the rewrite)
-      convert hn
+    grind
 
 /-- ### Fact 2
 `B_k` is a decreasing sequence of sets (i.e. `B_{k+1} ⊆ B_k`).
@@ -131,12 +126,14 @@ lemma tendsto_prob_B_limsup
   /- This is a direct application of the continuity from above, which in Lean is expressed as
      `tendsto_measure_iInter_atTop`.
      Problem: our goal is NNReal convergence, but `tendsto_measure_iInter_atTop` gives
-     ENNReal convergence. The next step translates ENNReal convergence to NNReal convergence
+     ENNReal convergence. The next step translates NNReal convergence to ENNReal convergence
      via `ENNReal.tendsto_toNNReal.comp`.
      After that step, the remaining goal uses ↑P (the coercion to Measure α, which is
      ENNReal-valued) instead of the original NNReal-valued P. -/
   apply Filter.Tendsto.comp (ENNReal.tendsto_toNNReal ?_)
-  · -- Original goal but the NNReal version
+  -- -- Apply Tendsto.comp (Tendsto f l₁ l₂ → Tendsto g l₂ l₃ → Tendsto (g ∘ f) l₁ l₃) with
+  -- f N := (↑P : Measure α) (B A N) and g := ENNReal.toNNReal. Lean inferred the type of ↑P itself.
+  · -- Original goal but the ENNReal version (P is casted from ProbabilityMeasure to Measure)
     have hf : ∃ i, (↑P : Measure α) (B A i) ≠ ⊤ := by
       -- This hypothesis proves finitness of measure of at least one B k
       -- Because P is a probability measure, it is always finite so we can take any i.
@@ -152,48 +149,6 @@ lemma tendsto_prob_B_limsup
     apply measure_ne_top (↑P : Measure α) (⋂ k, B A k)
 
 /-! ## Lemmas about the tails sum useful in the 2nd limit proof-/
-/-- The tail sum of `P (A n)` tends to 0 as `k → ∞` -/
-lemma tendsto_tail_tsum_zero
-    :
-    Tendsto (fun k => ∑' n : {n : ℕ | n >= k}, P (A n)) atTop (nhds 0) := by
-  /- Mathlib already has `NNReal.tendsto_sum_nat_add`, which says that for a summable f,
-     ∑_{m=0}^∞ f(m + k) → 0  as k → ∞.
-     Our tail sum is indexed over the subtype {n : ℕ | n ≥ k}, not "over ℕ with a shift".
-     So we need to transform our tail into the "shifted" version to apply the existing lemma.
-     To reindex, we use `Equiv.tsum_eq`: if e : β ≃ γ is a bijection, then
-     ∑'(b : β) f(b) = ∑'(c : γ) f(e c). -/
-  have h_eq : ∀ k, ∑' n : {n : ℕ | n >= k}, P (A n) = ∑' m, P (A (m + k)) := by
-    intro k
-    -- First we build e : ℕ ≃ {n : ℕ | n ≥ k} as the bijection m ↦ m + k,
-    -- with inverse n ↦ n - k.
-    let e : ℕ ≃ {n : ℕ | n >= k} :=
-      { -- toFun maps from ℕ to the subtype. We prived the mapping (m + k) and the proof that it
-        -- is in the subtype .
-        toFun := fun m => ⟨m + k, by grind⟩
-        -- invFun maps from the subtype to N.
-        invFun := fun x => x.val - k
-        -- left_inv is a proof that for all m, invFun (toFun m) = m
-        left_inv := by
-          unfold Function.LeftInverse
-          intro m
-          simp only [add_tsub_cancel_right]
-        -- right_inv is a proof that for all x, toFun (invFun x) = x.
-        right_inv := by
-          unfold Function.RightInverse Function.LeftInverse
-          intro m
-          grind
-      }
-    -- After building the bijection we can use `Equiv.tsum_eq` to reindex the sum.
-    exact (Equiv.tsum_eq (e := e) (f := fun n : {n : ℕ | n >= k} => P (A ↑n))).symm
-  have h_eq_fun :
-      (fun k => ∑' n : {n : ℕ | n >= k}, P (A n))
-        = (fun k => ∑' m, P (A (m + k))) := by
-    -- Build a function-level equality to rewrite with it
-    funext k -- Prove 2 functions are equal by showing that they are equal at each input k.
-    exact h_eq k
-  rw [h_eq_fun]
-  exact NNReal.tendsto_sum_nat_add (fun n => P (A n))
-
 /-- Probability of `B k` is bounded above by the tail sum of `P (A n)`. -/
 lemma prob_B_le_tsum
     (hSummable : Summable (fun n : ℕ => P (A n))) :
@@ -246,7 +201,6 @@ lemma prob_B_le_tsum
       intro hx
       obtain ⟨n, hx_in⟩ := hx
       use n
-      simp only [ge_iff_le]
       grind
     · -- ← direction
       intro hx
@@ -271,6 +225,42 @@ lemma prob_B_le_tsum
   rw [h_union, h_sum]
   exact h_sub_if
 
+/-- The tail sum of `P (A n)` tends to 0 as `k → ∞` -/
+lemma tendsto_tail_tsum_zero
+    :
+    Tendsto (fun k => ∑' n : {n : ℕ | n >= k}, P (A n)) atTop (nhds 0) := by
+  /- Mathlib already has `NNReal.tendsto_sum_nat_add`, which says that for a summable f,
+     ∑_{m=0}^∞ f(m + k) → 0  as k → ∞.
+     Our tail sum is indexed over the subtype {n : ℕ | n ≥ k}, not "over ℕ with a shift".
+     So we need to transform our tail into the "shifted" version to apply the existing lemma.
+     To reindex, we use `Equiv.tsum_eq`: if e : β ≃ γ is a bijection, then
+     ∑'(b : β) f(b) = ∑'(c : γ) f(e c). -/
+  have h_eq : ∀ k, ∑' n : {n : ℕ | n >= k}, P (A n) = ∑' m, P (A (m + k)) := by
+    intro k
+    -- First we build e : ℕ ≃ {n : ℕ | n ≥ k} as the bijection m ↦ m + k,
+    -- with inverse n ↦ n - k.
+    let e : ℕ ≃ {n : ℕ | n >= k} :=
+      { -- toFun maps from ℕ to the subtype. We prived the mapping (m + k) and the proof that it
+        -- is in the subtype .
+        toFun := fun m => ⟨m + k, by grind⟩
+        -- invFun maps from the subtype to N.
+        invFun := fun x => x.val - k
+        -- left_inv is a proof that for all m, invFun (toFun m) = m
+        left_inv := by grind
+        -- right_inv is a proof that for all x, toFun (invFun x) = x.
+        right_inv := by grind
+      }
+    -- After building the bijection we can use `Equiv.tsum_eq` to reindex the sum.
+    exact (Equiv.tsum_eq (e := e) (f := fun n : {n : ℕ | n >= k} => P (A ↑n))).symm
+  have h_eq_fun :
+      (fun k => ∑' n : {n : ℕ | n >= k}, P (A n))
+        = (fun k => ∑' m, P (A (m + k))) := by
+    -- Build a function-level equality to rewrite with it
+    funext k -- Prove 2 functions are equal by showing that they are equal at each input k.
+    exact h_eq k
+  rw [h_eq_fun]
+  exact NNReal.tendsto_sum_nat_add (fun n => P (A n))
+
 /-! ## Proof of the 2nd limit: `P (B k) → 0` as `k → ∞` (2) -/
 /-- Probability of the tail set `B k` tends to 0 as `k → ∞` -/
 lemma tendsto_prob_B_zero
@@ -282,12 +272,8 @@ lemma tendsto_prob_B_zero
     simp only [tendsto_const_nhds]
   refine tendsto_of_tendsto_of_tendsto_of_le_of_le
     (f := fun k : ℕ => P (B A k))
-    (g := fun _ : ℕ => (0 : NNReal))
-    (h := fun k => ∑' n : {n : ℕ | n >= k}, P (A n))
-    (b := atTop)
-    (a := (0 : NNReal))
-    (hg := h_tends_0)
-    (hh := tendsto_tail_tsum_zero (P := P) (A := A))
+    (hg := h_tends_0) -- g(x) = 0
+    (hh := tendsto_tail_tsum_zero (P := P) (A := A)) -- h(x) = tail sum
     ?_ ?_
   · -- 0 ≤ P (B k)
     intro k

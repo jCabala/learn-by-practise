@@ -150,7 +150,6 @@ lemma lagrange_basis_degree_lt
 -- ============================================================
 theorem existence_of_lagrange_interpolating_polynomial
     {K : Type*} [Field K]
-    {ι : Type*} [DecidableEq ι]
     (s : Finset ι) -- Index set
     (hs : s.Nonempty)
     (v : ι → K)

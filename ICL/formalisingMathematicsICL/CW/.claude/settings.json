@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -r \"theorem\\\\|lemma\\\\|def \" /home/jcabala/learn-by-practise/ICL/formalisingMathematicsICL/CW/CW/*.lean)",
+      "Bash(lake build CW.Poseidon)",
+      "Bash(lake build CW.Poseidon.PoseidonDefs)",
+      "Bash(lake build CW.Poseidon.Poseidon)",
+      "Read(//home/jcabala/learn-by-practise/ICL/formalisingMathematicsICL/**)"
+    ],
+    "additionalDirectories": [
+      "/home/jcabala/learn-by-practise/ICL/formalisingMathematicsICL/CW/CW/Poseidon"
+    ]
+  }
+}
