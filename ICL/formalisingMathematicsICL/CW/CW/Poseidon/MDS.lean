@@ -12,9 +12,8 @@ open Matrix
 
 /-! ## Definitions of MDS matrix -/
 
-/-- A `t × t` matrix over a commutative ring is **MDS** if every `k × k`
-    submatrix (for `k ≤ t`) obtained by choosing `k` distinct rows and
-    `k` distinct columns has nonzero determinant. -/
+/-- A `t × t` matrix over a commutative ring is **MDS** if every `k × k` submatrix obtained
+    by choosing `k` distinct rows and `k` distinct columns has nonzero determinant. -/
 def IsMDS {R : Type*} [CommRing R] {t : ℕ} (M : Matrix (Fin t) (Fin t) R) : Prop :=
   -- `↪` denotes injective functions. It automatically forces `k ≤ t`.
   ∀ (k : ℕ) (f g : Fin k ↪ Fin t), (M.submatrix f g).det ≠ 0
@@ -26,19 +25,19 @@ theorem CauchyMatrix.isMDS {F : Type*} [Field F] {t : ℕ}
   /- Use the facts that every square submatrix of a Cauchy matrix is a Cauchy matrix, and every
      Cauchy matrix has nonzero determinant. -/
   intro k f g
-  obtain ⟨C', hC'⟩ := C.submatrix k f g
+  obtain ⟨C', hC'⟩ := C.submatrix_is_Cauchy k f g
   grind [C'.non_zero_determinant]
 
 /-! ## Existance Theorem -/
 
 /-- **Existence of MDS matrices over prime fields.**
-    If `2t + 1 ≤ p` then there exists a `t × t` MDS matrix over `ZMod p`. -/
+    If `2t ≤ p` then there exists a `t × t` MDS matrix over `ZMod p`. -/
 theorem exists_mds_matrix {p : ℕ} [Fact (Nat.Prime p)] {t : ℕ}
-    (h : 2 * t + 1 ≤ p) :
+    (h : 2 * t ≤ p) :
     ∃ M : Matrix (Fin t) (Fin t) (ZMod p), IsMDS M := by
   /- We construct a Cauchy matrix with row parameters `0, 1, ..., t-1` and column parameters
     `t, t+1, ..., 2t-1`. The conditions on the row and column parameters are satisfied because
-    `2t - 1 < p`, so all these numbers are distinct mod p. Then we use the fact that Cauchy matrices
+    `2t <= p`, so all these numbers are distinct mod p. Then we use the fact that Cauchy matrices
      are MDS. -/
   /- First, we prove a result allowing for deduplication of the injectivity proof for the row and
      column parameters. -/
@@ -56,7 +55,7 @@ theorem exists_mds_matrix {p : ℕ} [Fact (Nat.Prime p)] {t : ℕ}
   let C : CauchyMatrix (ZMod p) t :=
     { x := fun i => i
       y := fun j => t + j
-      hx := finCast_injective -- Prove that all row parameters are distinct
+      hx := by exact finCast_injective -- Prove that all row parameters are distinct
       hy := by -- Prove that all column parameters are distinct
         intro i j hij
         -- Cancel t from both sides to get the same goal as hx and use the finCast_injective lemma

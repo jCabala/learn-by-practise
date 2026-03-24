@@ -25,7 +25,7 @@ def CauchyMatrix.toMatrix {F : Type*} [Field F] {t : ℕ}
 
 /-- Every square submatrix of a Cauchy matrix is again a Cauchy matrix,
     obtained by restricting the row and column parameters along injective maps. -/
-lemma CauchyMatrix.submatrix {F : Type*} [Field F] {t : ℕ}
+lemma CauchyMatrix.submatrix_is_Cauchy {F : Type*} [Field F] {t : ℕ}
     (C : CauchyMatrix F t) (k : ℕ) (f g : Fin k ↪ Fin t) :
     ∃ C' : CauchyMatrix F k, C'.toMatrix = C.toMatrix.submatrix f g := by
     -- Construct the Cauchy sub-matrix
